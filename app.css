@@ -134,11 +134,16 @@ h3 {
   margin: 10px 0; }
 
 .p3 {
-  color: #111111;
-  font-size: 1rem;
+  color: #989898;
+  font-size: 1.3rem;
   font-weight: 300;
-  line-height: 1.3rem;
+  line-height: 1.69rem;
   margin: 20px 0; }
+
+a {
+  color: #111111; }
+  a:hover {
+    text-decoration: underline; }
 
 header {
   align-items: center;
@@ -223,44 +228,112 @@ ul.container > a:hover > .hero {
 ul.container > a:hover > .games4u {
   background-image: url("images/games4u-cover-background@2x.png");
   background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
+  background-position: center bottom;
+  background-size: contain;
   background-blend-mode: saturation;
-  background-color: #55ffd6;
-  background-position: center bottom; }
+  background-color: #55ffd6; }
 ul.container > a:hover > .soy-luna {
   background-image: url("images/soy-luna-cover-background@2x.png");
   background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
+  background-position: center bottom;
+  background-size: contain;
   background-blend-mode: soft-light;
-  background-color: #07dafc;
-  background-position: center bottom; }
+  background-color: #07dafc; }
 ul.container > a:hover > .vdeo {
+  background-image: url("images/vdeo-cover-background@2x.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+  background-blend-mode: soft-light;
   background-color: #d3348e; }
 ul.container > a:hover > .ipanema {
+  background-image: url("images/ipanema-cover-background@2x.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+  background-blend-mode: multiply;
   background-color: #f54f6b; }
 ul.container > a:hover > .getnet {
+  background-image: url("images/getnet-cover-background@2x.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+  background-blend-mode: soft-light;
   background-color: #3197da; }
 ul.container > a:hover > .kikast {
+  background-image: url("images/kikast-cover-background@2x.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+  background-blend-mode: soft-light;
   background-color: #f55652; }
 ul.container > a:hover > .terra {
+  background-image: url("images/terra-cover-background@2x.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+  background-blend-mode: soft-light;
   background-color: #f67113; }
+ul.container > a:hover > .bank-app {
+  background-image: url("images/bank-app-cover-background@2x.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+  background-blend-mode: soft-light;
+  background-color: #00e49f; }
+ul.container > a:hover > .eygl {
+  background-image: url("images/eygl-cover-background@2x.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+  background-blend-mode: soft-light;
+  background-color: #5b39d0; }
+ul.container > a:hover > .besafe {
+  background-image: url("images/besafe-cover-background@2x.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+  background-blend-mode: soft-light;
+  background-color: #09a3e8; }
+ul.container > a:hover > .retailpar {
+  background-image: url("images/retailpar-cover-background@2x.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+  background-blend-mode: overlay;
+  background-color: #1f302a; }
+ul.container > a:hover > .crowdstuffer {
+  background-image: url("images/crowdstuffer-cover-background@2x.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+  background-blend-mode: soft-light;
+  background-color: #ff7b06; }
+ul.container > a:hover > .burger-in-the-box {
+  background-image: url("images/burger-in-the-box-cover-background@2x.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+  background-blend-mode: soft-light;
+  background-color: #201a0d; }
+ul.container > a:hover > .run-calendar {
+  background-image: url("images/run-calendar-cover-background@2x.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+  background-blend-mode: soft-light;
+  background-color: #f2503d; }
 ul.container > a:hover > li > img {
   opacity: 1;
   transition: all 0.3s ease; }
 ul.container > a:hover > li > div {
-  transform: translateY(-55%);
+  transform: translateY(-60%);
   transition: all 0.3s ease; }
   ul.container > a:hover > li > div > h1, ul.container > a:hover > li > div h2, ul.container > a:hover > li > div h3, ul.container > a:hover > li > div p {
     color: #ffffff;
     transition: all 0.3s ease; }
 
 .panel {
-  align-items: flex-start;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   background-color: #ffffff;
   background-position: bottom;
   border-right: 1px solid #f2f1ef;
@@ -274,29 +347,15 @@ ul.container > a:hover > li > div {
   width: 33.33vw; }
   .panel > div {
     height: 60%;
-    margin: 70px;
+    padding: 70px;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    transition: all 0.3s ease; }
+    transition: all 0.3s ease;
+    width: 100%; }
 
-.bank-app {
-  background-image: url("images/bank-app-cover-background@2x.png");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover; }
-
-.besafe {
-  background-image: url("images/besafe-cover-background@2x.png");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover; }
-
-.burger-in-the-box {
-  background-image: url("images/burger-in-the-box-cover-background@2x.png");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover; }
+.panel__border--none {
+  border: none; }
 
 .menu {
   background-color: #111111; }
@@ -318,6 +377,35 @@ ul.container > a:hover > li > div {
       margin-left: 10px;
       text-decoration: line-through;
       transition: all 0.3s ease; }
+
+.project-description {
+  overflow: auto; }
+
+.presentation-image {
+  height: auto;
+  overflow: auto;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%; }
+
+.presentation-image__right {
+  right: -1px; }
+
+.project-screen-description {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  color: #989898;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 14 px;
+  bottom: 50px;
+  padding: 0 0 0 50px;
+  position: absolute;
+  text-transform: uppercase;
+  width: 100%; }
 
 
 /*# sourceMappingURL=app.css.map*/
