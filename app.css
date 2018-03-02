@@ -1,0 +1,323 @@
+html {
+  background-color: #ffffff;
+  font-family: "Proxima Nova", sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  font-smooth: antialiased;
+  font-weight: 300;
+  line-height: 1.3rem;
+  scroll-behavior: smooth; }
+  html * {
+    box-sizing: border-box;
+    font-family: "Proxima Nova", sans-serif;
+    margin: 0;
+    padding: 0; }
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block; }
+
+body {
+  line-height: 1;
+  overflow-x: hidden; }
+
+ol, ul {
+  list-style: none; }
+
+blockquote, q {
+  quotes: none; }
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: "";
+  content: none; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+a {
+  text-decoration: none; }
+
+@font-face {
+  font-family: "Proxima Nova";
+  font-style: normal;
+  font-weight: 100;
+  src: url("fonts/Proxima Nova Thin.woff") format("woff"); }
+@font-face {
+  font-family: "Proxima Nova";
+  font-style: italic;
+  font-weight: 100;
+  src: url("fonts/Proxima Nova Thin Italic.woff") format("woff"); }
+@font-face {
+  font-family: "Proxima Nova";
+  font-style: normal;
+  font-weight: 200;
+  src: url("fonts/ProximaNova-Light.woff") format("woff"); }
+@font-face {
+  font-family: "Proxima Nova";
+  font-style: italic;
+  font-weight: 200;
+  src: url("fonts/ProximaNova-LightItalic.woff") format("woff"); }
+@font-face {
+  font-family: "Proxima Nova";
+  font-style: normal;
+  font-weight: 300;
+  src: url("fonts/ProximaNova-Regular.woff") format("woff"); }
+@font-face {
+  font-family: "Proxima Nova";
+  font-style: italic;
+  font-weight: 300;
+  src: url("fonts/ProximaNova-RegularItalic.woff") format("woff"); }
+@font-face {
+  font-family: "Proxima Nova";
+  font-style: normal;
+  font-weight: 600;
+  src: url("fonts/ProximaNova-Semibold.woff") format("woff"); }
+@font-face {
+  font-family: "Proxima Nova";
+  font-style: italic;
+  font-weight: 600;
+  src: url("fonts/ProximaNova-SemiboldItalic.woff") format("woff"); }
+@font-face {
+  font-family: "Proxima Nova";
+  font-style: normal;
+  font-weight: 700;
+  src: url("fonts/ProximaNova-Bold.woff") format("woff"); }
+@font-face {
+  font-family: "Proxima Nova";
+  font-style: italic;
+  font-weight: 700;
+  src: url("fonts/ProximaNova-BoldIt.woff") format("woff"); }
+@font-face {
+  font-family: "Proxima Nova";
+  font-style: normal;
+  font-weight: 800;
+  src: url("fonts/ProximaNova-Extrabold.woff") format("woff"); }
+@font-face {
+  font-family: "Proxima Nova";
+  font-style: normal;
+  font-weight: 900;
+  src: url("fonts/ProximaNova-Black.woff") format("woff"); }
+h1 {
+  color: #111111;
+  font-size: 4.826809rem;
+  font-weight: 800;
+  line-height: 4.826809rem;
+  transition: all 0.3s ease; }
+
+h2 {
+  color: #111111;
+  font-size: 3.71293rem;
+  font-weight: 700;
+  line-height: 3.71293rem; }
+
+h3 {
+  color: #989898;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1rem;
+  margin: 10px 5px;
+  text-transform: uppercase; }
+
+.p1 {
+  color: #989898;
+  font-size: 2.8561rem;
+  font-weight: 100;
+  line-height: 3.71293rem; }
+
+.p2 {
+  color: #989898;
+  font-size: 1.69rem;
+  font-weight: 200;
+  line-height: 2.197rem;
+  margin: 10px 0; }
+
+.p3 {
+  color: #111111;
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1.3rem;
+  margin: 20px 0; }
+
+header {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 70px;
+  margin: 0 auto;
+  padding: 0 5vw;
+  position: fixed;
+  width: 100vw;
+  z-index: 2; }
+  header > a {
+    transition: all 0.3s ease; }
+    header > a:hover {
+      opacity: 0.75;
+      transition: all 0.3s ease; }
+
+.logo {
+  background-color: #111111;
+  border-radius: 0 24px 24px 0;
+  height: 32px;
+  width: 32px; }
+
+.ic-menu {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 16px;
+  width: 16px; }
+
+.ic-menu-bar {
+  background-color: #111111;
+  height: 2px;
+  width: 100%; }
+
+.internal-title {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 100vh;
+  padding: 15%;
+  width: 100vw; }
+
+::-webkit-scrollbar {
+  width: 1px;
+  height: 1px; }
+
+::-webkit-scrollbar-button {
+  width: 1px;
+  height: 1px; }
+
+.container {
+  background-color: #ffffff;
+  display: block;
+  position: absolute;
+  left: 0;
+  margin: 0;
+  max-height: 100vw;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0;
+  scroll-behavior: smooth;
+  top: 0;
+  transform: rotate(-90deg) translateY(-100vh);
+  transform-origin: right top;
+  white-space: nowrap;
+  width: 100vh; }
+
+ul.container > a > li > img {
+  bottom: 0;
+  height: auto;
+  opacity: 0;
+  position: absolute;
+  transition: all 0.3s ease;
+  width: 100%; }
+
+ul.container > a:hover > .hero {
+  background-color: #111111; }
+ul.container > a:hover > .games4u {
+  background-image: url("images/games4u-cover-background@2x.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-blend-mode: saturation;
+  background-color: #55ffd6;
+  background-position: center bottom; }
+ul.container > a:hover > .soy-luna {
+  background-image: url("images/soy-luna-cover-background@2x.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-blend-mode: soft-light;
+  background-color: #07dafc;
+  background-position: center bottom; }
+ul.container > a:hover > .vdeo {
+  background-color: #d3348e; }
+ul.container > a:hover > .ipanema {
+  background-color: #f54f6b; }
+ul.container > a:hover > .getnet {
+  background-color: #3197da; }
+ul.container > a:hover > .kikast {
+  background-color: #f55652; }
+ul.container > a:hover > .terra {
+  background-color: #f67113; }
+ul.container > a:hover > li > img {
+  opacity: 1;
+  transition: all 0.3s ease; }
+ul.container > a:hover > li > div {
+  transform: translateY(-55%);
+  transition: all 0.3s ease; }
+  ul.container > a:hover > li > div > h1, ul.container > a:hover > li > div h2, ul.container > a:hover > li > div h3, ul.container > a:hover > li > div p {
+    color: #ffffff;
+    transition: all 0.3s ease; }
+
+.panel {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #ffffff;
+  background-position: bottom;
+  border-right: 1px solid #f2f1ef;
+  display: block;
+  height: 100vh;
+  margin: calc(-100vh + 33.36vw) 0;
+  transform: rotate(90deg) translateX(-33.36vw);
+  transform-origin: bottom left;
+  transition: all 0.3s ease;
+  white-space: normal;
+  width: 33.33vw; }
+  .panel > div {
+    height: 60%;
+    margin: 70px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all 0.3s ease; }
+
+.bank-app {
+  background-image: url("images/bank-app-cover-background@2x.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover; }
+
+.besafe {
+  background-image: url("images/besafe-cover-background@2x.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover; }
+
+.burger-in-the-box {
+  background-image: url("images/burger-in-the-box-cover-background@2x.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover; }
+
+.menu {
+  background-color: #111111; }
+
+.menu-item {
+  color: #ffffff;
+  font-size: 2.8561rem;
+  font-weight: 700;
+  line-height: 2.8561rem;
+  margin: 20px 0; }
+  .menu-item > a {
+    color: #ffffff;
+    font-size: 2.8561rem;
+    font-weight: 200;
+    line-height: 2.8561rem;
+    text-decoration: none;
+    transition: all 0.3s ease; }
+    .menu-item > a:hover {
+      margin-left: 10px;
+      text-decoration: line-through;
+      transition: all 0.3s ease; }
+
+
+/*# sourceMappingURL=app.css.map*/
