@@ -358,6 +358,9 @@ ul.container > a:hover > li > div {
   border: none; }
 
 @media (max-width: 768px) {
+  ul.container > a > li > img {
+    bottom: 50px; }
+
   .panel {
     margin: calc(-100vh + 100vw) 0;
     transform: rotate(90deg) translateX(-100vw);
