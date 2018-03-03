@@ -361,7 +361,10 @@ ul.container > a:hover > li > div {
   .panel {
     margin: calc(-100vh + 100vw) 0;
     transform: rotate(90deg) translateX(-100vw);
-    width: 100vw; } }
+    width: 100vw; }
+    .panel > div {
+      height: 80%;
+      padding: 50px; } }
 .menu {
   background-color: #111111; }
 
@@ -411,6 +414,10 @@ ul.container > a:hover > li > div {
   position: absolute;
   text-transform: uppercase;
   width: 100%; }
+
+@media (max-width: 768px) {
+  .presentation-image {
+    width: 90%; } }
 
 
 /*# sourceMappingURL=app.css.map*/
