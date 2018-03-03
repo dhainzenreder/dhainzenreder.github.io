@@ -411,7 +411,7 @@ ul.container > a:hover > li > div {
   color: #989898;
   font-size: 12px;
   font-weight: 300;
-  line-height: 14 px;
+  line-height: 14px;
   bottom: 50px;
   padding: 0 0 0 50px;
   position: absolute;
@@ -420,7 +420,10 @@ ul.container > a:hover > li > div {
 
 @media (max-width: 768px) {
   .presentation-image {
-    width: 90%; } }
+    width: 90%; }
+
+  .project-screen-description {
+    bottom: 20px; } }
 
 
 /*# sourceMappingURL=app.css.map*/
