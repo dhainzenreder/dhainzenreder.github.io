@@ -357,6 +357,11 @@ ul.container > a:hover > li > div {
 .panel__border--none {
   border: none; }
 
+@media (max-width: 768px) {
+  .panel {
+    margin: calc(-100vh + 100vw) 0;
+    transform: rotate(90deg) translateX(-100vw);
+    width: 100vw; } }
 .menu {
   background-color: #111111; }
 
