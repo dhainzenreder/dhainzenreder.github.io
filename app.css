@@ -420,10 +420,7 @@ ul.container > a:hover > li > div {
 
 @media (max-width: 768px) {
   .presentation-image {
-    width: 90%; }
-
-  .project-screen-description {
-    bottom: 20px; } }
+    width: 90%; } }
 
 
 /*# sourceMappingURL=app.css.map*/
