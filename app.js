@@ -148,7 +148,7 @@ var __makeRelativeRequire = function(require, mappings, pref) {
   }
 };
 require.register("initialize.js", function(exports, require, module) {
-"use strict";
+'use strict';
 
 document.addEventListener('DOMContentLoaded', function () {
   // do your setup here
