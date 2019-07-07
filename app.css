@@ -225,6 +225,13 @@ ul.container > a > li > img {
 
 ul.container > a:hover > .hero {
   background-color: #111111; }
+ul.container > a:hover > .quotapath {
+  background-image: url("images/quotapath-cover-background@2x.png");
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: contain;
+  background-blend-mode: soft-light;
+  background-color: #115fce; }
 ul.container > a:hover > .goat {
   background-image: url("images/goat-cover-background@2x.png");
   background-repeat: no-repeat;
