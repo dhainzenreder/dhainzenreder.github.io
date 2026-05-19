@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diego — Product Design Leader</title>
+  <style>
+    /* ─── Helvetica LT Pro ─── */
+    @font-face {
+      font-family: "Helvetica LT Pro";
+      font-weight: 400;
+      font-style: normal;
+      src: local("HelveticaLTPro-Roman"), local("Helvetica LT Pro Roman"), local("Helvetica LT Pro");
+    }
+    @font-face {
+      font-family: "Helvetica LT Pro";
+      font-weight: 300;
+      font-style: normal;
+      src: local("HelveticaLTPro-Light"), local("Helvetica LT Pro Light");
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ─── Grid tokens ─── */
+    :root {
+      --ink: rgb(255, 255, 255);
+      --paper: #141414;
+      --card: #141414;
+      --border: rgba(255, 255, 255, 0.18);
+      --border-soft: rgba(255, 255, 255, 0.15);
+      --muted: rgba(255, 255, 255, 0.7);
+      --hover: #1c1c1c;
+      --gap: 24px;
+      --cols: 12;
+      --frame: 10px;          /* frame-line inset on mobile */
+      --container: 436px;
+      --col-width: calc((var(--container) - 11 * var(--gap)) / 12);
+      --slide-peek: calc(var(--gap) + var(--col-width) + var(--gap));
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --ink: #141414;
+        --paper: #ffffff;
+        --card: #ffffff;
+        --border: rgba(20, 20, 20, 0.18);
+        --border-soft: rgba(20, 20, 20, 0.15);
+        --muted: rgba(20, 20, 20, 0.6);
+        --hover: color-mix(in srgb, var(--ink) 6%, var(--paper));
+      }
+    }
+    @media (min-width: 768px)  { :root { --container: 720px;  --frame: 60px; } }
+    @media (min-width: 992px)  { :root { --container: 852px;  --frame: 60px; } }
+    @media (min-width: 1200px) { :root { --container: 1060px; --frame: 60px; } }
+    @media (min-width: 1400px) { :root { --container: 1260px; --frame: 60px; } }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Helvetica LT Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ─── Reveal animations ─── */
+    @keyframes revealUp {
+      from { opacity: 0; transform: translateY(48px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes revealOut {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(var(--exit-y, -32px)); }
+    }
+    .reveal { opacity: 0; transform: translateY(48px); }
+    .reveal.in-view { animation: revealUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .reveal.exiting { animation: revealOut 0.6s cubic-bezier(0.4, 0, 1, 1) forwards; animation-delay: 0s !important; }
+    .reveal.snap-visible { opacity: 1 !important; transform: none !important; animation: none !important; }
+    .reveal.d1 { animation-delay: 0.10s; }
+    .reveal.d2 { animation-delay: 0.22s; }
+    .reveal.d3 { animation-delay: 0.34s; }
+    .reveal.d4 { animation-delay: 0.46s; }
+    .reveal.d5 { animation-delay: 0.58s; }
+    .reveal.d6 { animation-delay: 0.70s; }
+    .reveal.d7 { animation-delay: 0.82s; }
+
+    /* ─── Fixed Frame Lines (4 sides) ─── */
+    .frame-line {
+      position: fixed;
+      background: var(--ink);
+      z-index: 50;
+      pointer-events: none;
+    }
+    /* vertical */
+    .frame-l, .frame-r { top: 0; bottom: 0; width: 1px; }
+    .frame-l { left: var(--frame); }
+    .frame-r { right: var(--frame); }
+    /* horizontal */
+    .frame-t, .frame-b { left: 0; right: 0; height: 1px; }
+    .frame-t { top: var(--frame); }
+    .frame-b { bottom: var(--frame); }
+
+    /* ─── Nav ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 300;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .nav-btn {
+      width: calc(var(--frame) + 1px);
+      min-width: 44px;
+      height: calc(var(--frame) + 1px);
+      min-height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 300;
+      font-family: inherit;
+      cursor: pointer; border: none; background: none;
+      color: var(--ink);
+    }
+    .nav-btn.white { color: var(--paper); }
+
+    /* ─── Menu Overlay ─── */
+    .menu-overlay {
+      position: fixed; inset: 0;
+      height: 100vh;
+      background: var(--card);
+      z-index: 250;
+      overflow-y: auto;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    .menu-overlay.open { opacity: 1; pointer-events: all; }
+    .menu-links {
+      display: block;
+      width: 100%;
+      padding-top: max(calc(var(--frame) + 1px), 44px);
+    }
+    .menu-links a {
+      font-size: clamp(40px, 7vw, 96px);
+      line-height: 1;
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 300;
+      padding: 20px 40px;
+      width: 100%;
+      display: block;
+      border-bottom: 1px solid var(--border-soft);
+      transition: opacity 0.2s;
+    }
+    .menu-links a:last-child { border-bottom: none; }
+    .menu-links a:hover { opacity: 0.5; }
+
+    /* Hide the open button while menu is open; show close in its place */
+    body.menu-open #menuBtn { display: none; }
+    #menuClose {
+      display: none;
+    }
+    body.menu-open #menuClose { display: flex; }
+
+    /* ─── Container / Grid ─── */
+    .wrap {
+      width: 100%;
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 var(--gap);
+    }
+    /* 12-col grid helper */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--gap);
+    }
+
+    /* ─── Sections ─ each at least 90vh, grow with content ─── */
+    section {
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    section .wrap { width: 100%; }
+
+    /* ─── Hero ─── */
+    #hero .wrap { position: relative; height: 100%; display: flex; align-items: center; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--gap);
+      width: 100%;
+      align-items: start;
+    }
+    .hero-left {
+      grid-column: 9 / 13;
+      grid-row: 2;
+    }
+    .hero-right {
+      grid-column: 1 / 10;
+      grid-row: 1;
+    }
+    .hero-text {
+      font-size: 40px;
+      line-height: 1.2;
+      font-weight: 300;
+    }
+    .hero-left .hero-text { font-size: 22px; }
+    .hero-right .hero-text { font-size: 40px; }
+    .hero-text .line1,
+    .hero-text .line2,
+    .hero-text .line3 { display: block; }
+    .hero-text .line1 { font-weight: 200; }
+    .hero-text .line2-strong { font-weight: 400; }
+    .hero-text .line2-light { font-weight: 200; }
+    .hero-text .line2 { margin-bottom: 1em; }
+    .what-italic { font-style: italic; }
+
+
+
+    /* ─── How ─── */
+    #how {
+      min-height: 80vh;
+    }
+    .how-text {
+      font-size: clamp(24px, 4.5vw, 64px);
+      line-height: 1;
+      font-weight: 400;
+      text-align: left;
+    }
+
+    /* ─── Layers (sticky horizontal carousel) ─── */
+    .layers-scroll-outer { height: calc(3 * 100vh); }
+    #layers {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      align-items: stretch;
+      padding: 0;
+      overflow: hidden;
+    }
+    #layers .wrap { height: 100%; padding: 0; max-width: 100%; }
+    .layers-track {
+      display: flex;
+      flex-direction: row;
+      height: 100%;
+      width: 100%;
+      will-change: transform;
+    }
+    .layer-card {
+      flex: 0 0 100%;
+      width: 100%;
+      background: var(--card);
+      color: var(--ink);
+      padding: clamp(40px, 8vw, 120px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+    }
+    .layer-card h3 {
+      font-size: clamp(64px, 12vw, 200px);
+      font-weight: 200;
+      line-height: 0.95;
+      margin-bottom: clamp(24px, 3vw, 48px);
+    }
+    .layer-card p {
+      font-size: clamp(18px, 1.8vw, 28px);
+      font-weight: 200;
+      line-height: 1.3;
+      max-width: 720px;
+    }
+
+    /* ─── Where ─── */
+    #where {
+      padding: clamp(80px, 12vh, 160px) 0;
+    }
+    #where .wrap {
+      display: flex;
+      align-items: center;
+    }
+    #where .where-inner {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--gap);
+      align-items: start;
+      width: 100%;
+    }
+    .where-headline {
+      grid-column: 1 / 13;
+      padding-top: 8px;
+      margin-bottom: clamp(24px, 4vh, 56px);
+    }
+    .where-headline h2 {
+      font-size: clamp(32px, 5vw, 72px);
+      line-height: 1;
+      font-weight: 300;
+    }
+    .where-topics {
+      grid-column: 1 / 13;
+      display: flex;
+      flex-direction: column;
+      /* distance from viewport edge to text-content edge */
+      --bleed: calc(max(0px, (100vw - var(--container)) / 2) + var(--gap));
+    }
+    .topic-item {
+      padding: 48px var(--bleed);
+      margin-left: calc(-1 * var(--bleed));
+      margin-right: calc(-1 * var(--bleed));
+      border-top: 1px solid var(--border);
+    }
+    .topic-item:first-child { border-top: none; }
+    .topic-item:last-child { border-bottom: none; }
+    .topic-title {
+      font-size: 40px;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+    .topic-desc {
+      font-size: 18px;
+      font-weight: 200;
+      line-height: 1.2;
+    }
+
+    /* ─── Recent / Work ─── */
+    #recent {
+      min-height: 90vh;
+      display: block;
+      padding: clamp(80px, 14vh, 160px) 0 0;
+    }
+    #recent .wrap { width: 100%; }
+    .recent-intro {
+      margin-bottom: clamp(48px, 8vh, 96px);
+    }
+    .rbi-name { font-weight: 400; }
+    .slide-role {
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--ink);
+      letter-spacing: 0;
+      text-transform: none;
+      margin-bottom: 24px;
+    }
+    .recent-title {
+      font-size: clamp(28px, 3.5vw, 56px);
+      font-weight: 200;
+      line-height: 1.05;
+      margin-bottom: 8px;
+      max-width: 900px;
+    }
+    .recent-org {
+      font-size: clamp(28px, 3.5vw, 56px);
+      font-weight: 400;
+      line-height: 1.05;
+      margin-bottom: 16px;
+      max-width: 900px;
+    }
+    .recent-desc {
+      font-size: 18px;
+      font-weight: 200;
+      line-height: 1.3;
+      max-width: 720px;
+    }
+
+    /* Full-bleed grid of 9 cells (3 cols × 3 rows) */
+    .recent-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      border-top: 1px solid var(--border);
+      border-left: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .recent-cell {
+      aspect-ratio: 1 / 1;
+      min-width: 0;
+      padding: clamp(20px, 2.2vw, 40px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--paper);
+      transition: background-color 200ms ease;
+    }
+    .recent-cell:hover { background-color: var(--hover); }
+    /* Pair: squares 1 & 2 hover together */
+    .recent-grid:has(.pair-a:hover) .pair-a { background-color: var(--hover); }
+    .cell-conference { transition: background-color 200ms ease; }
+    .cell-conference:hover { background-color: var(--hover); }
+    .cell-conference:hover .cell-conf-text { background-color: var(--hover); }
+    .cell-conf-text { transition: background-color 200ms ease; }
+    .cell-label {
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--ink);
+    }
+    .recent-cell.cell-span-2 {
+      grid-column: span 2;
+      aspect-ratio: 2 / 1;
+    }
+    .recent-cell p {
+      font-size: 18px;
+      font-weight: 200;
+      line-height: 1.3;
+    }
+
+    /* Intro cell (position 1) */
+    .cell-intro .recent-title {
+      font-size: clamp(20px, 1.8vw, 28px);
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+    .cell-intro .recent-desc {
+      font-size: 18px;
+      font-weight: 200;
+      line-height: 1.3;
+    }
+
+    /* Stats cell (single cell, 3 rows: 1 / 2 / 2) */
+    .cell-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(3, auto);
+      align-content: end;
+      gap: clamp(16px, 1.8vw, 28px) clamp(16px, 1.8vw, 28px);
+    }
+    .cell-stats .stat-block { display: flex; flex-direction: column; min-width: 0; }
+    .cell-stats .stat-block.full { grid-column: 1 / -1; }
+    .cell-stats .stat-num {
+      font-size: clamp(32px, 3.6vw, 64px);
+      line-height: 1;
+      font-weight: 400;
+    }
+    .cell-stats .stat-label {
+      font-size: 18px;
+      font-weight: 200;
+      margin-top: 6px;
+      color: var(--muted);
+    }
+    /* Remove divider between square 1 and square 2 */
+    .recent-grid > .recent-cell:nth-child(1) { border-right: none; }
+
+    /* Conference cell (merged 2-wide: text left, image right) */
+    .cell-conference {
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: stretch;
+    }
+    .cell-conf-text {
+      padding: clamp(20px, 2.2vw, 40px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid var(--border);
+    }
+    .cell-conf-text p {
+      font-size: 18px;
+      font-weight: 200;
+      line-height: 1.3;
+    }
+    .cell-conf-image {
+      background-size: cover;
+      background-position: center;
+      background-color: color-mix(in srgb, var(--ink) 6%, transparent);
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      min-height: 90vh;
+      height: auto;
+      background: var(--card);
+      color: var(--ink);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    footer .wrap { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 0; }
+    .footer-inner {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--gap);
+      align-items: flex-start;
+      padding: 0 var(--gap);
+      padding-bottom: clamp(60px, 12vh, 140px);
+    }
+    .footer-name {
+      grid-column: 1 / 7;
+    }
+    .footer-name span {
+      font-size: 48px;
+      line-height: 1;
+      font-weight: 400;
+      display: block;
+    }
+    .footer-contact {
+      grid-column: 7 / 13;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: clamp(24px, 4vh, 56px);
+    }
+    .footer-links { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+    .footer-links a { font-size: 18px; color: var(--ink); text-decoration: underline; }
+    .footer-links span { font-size: 18px; color: var(--ink); }
+    .footer-tagline {
+      font-size: 18px;
+      font-weight: 200;
+      color: var(--ink);
+      text-align: right;
+      white-space: pre-line;
+      line-height: 1.3;
+    }
+
+    /* ─── Mobile overrides ─── */
+    @media (max-width: 767px) {
+      /* Layers stack vertically, no dividers between */
+      .layers-scroll-outer { height: auto; }
+      #layers { position: static; height: auto; overflow: visible; }
+      .layers-track { flex-direction: column; transform: none !important; transition: none; }
+      .layer-card { flex: 0 0 auto; min-height: 100vh; border-bottom: none; }
+      .layer-card h3 { font-size: 92px; }
+
+      /* Hero stacks */
+      .hero-left, .hero-right { grid-column: 1 / 13; grid-row: auto; }
+      .hero-right { margin-top: 0; }
+      .hero-left { margin-top: 32px; }
+
+      /* Where stacks (already 1/13 in base) */
+      .where-headline { grid-column: 1 / 13; }
+      .where-topics { grid-column: 1 / 13; }
+
+      /* Footer stacks */
+      .footer-name { grid-column: 1 / 13; }
+      .footer-contact { grid-column: 1 / 13; align-items: flex-start; }
+      .footer-tagline { text-align: left; }
+      .footer-links { align-items: flex-start; }
+    }
+
+    /* ─── Mobile + small tablet (≤991px): align all content to layer card padding ─── */
+    @media (max-width: 991px) {
+      .wrap {
+        padding-left: clamp(40px, 8vw, 120px);
+        padding-right: clamp(40px, 8vw, 120px);
+        max-width: 100%;
+      }
+      .footer-inner {
+        padding-left: clamp(40px, 8vw, 120px);
+        padding-right: clamp(40px, 8vw, 120px);
+      }
+      /* Layer cards already use the same padding scale, content lines up */
+    }
+
+    /* ─── Recent grid mobile + small tablet (≤991px) ─── */
+    @media (max-width: 991px) {
+      .recent-grid { grid-template-columns: repeat(2, 1fr); }
+      .recent-cell.cell-stats { grid-column: auto; aspect-ratio: 1 / 1; }
+      .recent-cell.cell-conference { display: contents; }
+      .cell-conf-text {
+        aspect-ratio: 1 / 1;
+        padding: clamp(20px, 2.2vw, 40px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border-right: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        background: var(--paper);
+        transition: background-color 200ms ease;
+      }
+      .cell-conf-text:hover { background-color: var(--hover); }
+      .cell-conf-image {
+        grid-column: 1 / -1;
+        aspect-ratio: 1 / 1;
+        border-bottom: 1px solid var(--border);
+      }
+    }
+
+    /* ─── Layer cards small tablet (768–991px): bigger headings, fit container ─── */
+    @media (min-width: 768px) and (max-width: 991px) {
+      .layer-card h3 {
+        font-size: clamp(96px, 14vw, 140px);
+        text-wrap: balance;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Frame lines removed -->
+
+<!-- Nav -->
+<nav>
+  <button class="nav-btn" id="menuBtn" aria-label="Open menu">menu</button>
+  <button class="nav-btn" id="menuClose" aria-label="Close menu">close</button>
+</nav>
+
+<!-- Menu Overlay -->
+<div class="menu-overlay" id="menuOverlay" aria-hidden="true">
+  <nav class="menu-links">
+    <a href="#hero"   onclick="closeMenu()">Intro</a>
+    <a href="#how"    onclick="closeMenu()">How I operate</a>
+    <a href="#layers" onclick="closeMenu()">The three layers</a>
+    <a href="#where"  onclick="closeMenu()">Expertise</a>
+    <a href="#recent" onclick="closeMenu()">Recent impact</a>
+    <a href="#footer" onclick="closeMenu()">Contact</a>
+  </nav>
+</div>
+
+<!-- ─── Hero ─── -->
+<section id="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-left reveal">
+        <p class="hero-text">
+          <span class="line1">Hello, I'm Diego.</span>
+          <span class="line2"><span class="line2-strong">Product Design Leader</span> <span class="line2-light">with over twenty years of experience building digital products.</span></span>
+        </p>
+      </div>
+      <div class="hero-right reveal d1">
+        <p class="hero-text">I shape design-driven product organizations by raising design maturity across craft, process, and strategy—<span class="what-italic">aligning design, product, and engineering to create adaptive products that improve continuously, not just ship.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── How ─── -->
+<section id="how">
+  <div class="wrap">
+    <p class="how-text reveal" style="font-size: 49px; font-weight: 300">I operate across three layers to improve how organizations design, decide, and deliver products.</p>
+  </div>
+</section>
+
+<!-- ─── Layers ─── -->
+<!-- ─── Layers (sticky horizontal scroll) ─── -->
+<div class="layers-scroll-outer" id="layers-scroll">
+<section id="layers">
+  <div class="wrap">
+    <div class="layers-track" id="layers-track">
+      <div class="layer-card reveal">
+        <h3>Craft</h3>
+        <p>Every detail matters. I push teams to build products that feel inevitable—where interaction, motion, and hierarchy unite into something people trust immediately.</p>
+      </div>
+      <div class="layer-card">
+        <h3>Cross-functional</h3>
+        <p>Great design happens at the seams. I work directly with engineering, product, and business leaders to align strategy with execution, shipping meaningful outcomes.</p>
+      </div>
+      <div class="layer-card">
+        <h3>Executive</h3>
+        <p>I translate design into business value at the leadership table. Clear vision turns into company initiatives, scaling overall design maturity.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</div><!-- /layers-scroll-outer -->
+
+<!-- ─── Where ─── -->
+<section id="where">
+  <div class="wrap">
+    <div class="where-inner">
+      <div class="where-headline reveal">
+        <h2 style="font-size: 56px">Where I make<br>a difference</h2>
+      </div>
+      <div class="where-topics reveal d1">
+        <div class="topic-item">
+          <div class="topic-title">Design Systems &amp; Operations</div>
+          <div class="topic-desc">Building scalable design infrastructure that accelerates teams.</div>
+        </div>
+        <div class="topic-item">
+          <div class="topic-title">Product Strategy &amp; Discovery</div>
+          <div class="topic-desc">Shaping vision from problem framing through launch and iteration.</div>
+        </div>
+        <div class="topic-item">
+          <div class="topic-title">Data &amp; Experimentation</div>
+          <div class="topic-desc">Designing analytics structure and UX metrics for A/B testing and continuous validation loops.</div>
+        </div>
+        <div class="topic-item">
+          <div class="topic-title">Team Development &amp; Culture</div>
+          <div class="topic-desc">Growing high-performing teams that ship with craft and velocity.</div>
+        </div>
+        <div class="topic-item">
+          <div class="topic-title">Strategic Transformation</div>
+          <div class="topic-desc">Leading design through acquisitions, pivots, and org-wide change.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Recent / Work ─── -->
+<section id="recent">
+  <div class="wrap">
+    <div class="recent-intro reveal">
+      <div class="slide-role">Recent impact</div>
+      <div class="recent-title">Digital Product Design Director</div>
+      <div class="recent-org">at <span class="rbi-name">Restaurant Brands International</span></div>
+      <div class="recent-desc">For three years I led design on the tech department for their international branch—working hybrid, remotely from Brazil and onsite in Switzerland.</div>
+    </div>
+  </div>
+  <div class="recent-grid reveal d1">
+    <!-- Row 1: [Product] [Stats] [Craft] -->
+    <div class="recent-cell pair-a">
+      <div class="cell-label">Product</div>
+    </div>
+    <div class="recent-cell cell-stats pair-a">
+      <div class="stat-block full"><div class="stat-num">3</div><div class="stat-label">Brands</div></div>
+      <div class="stat-block"><div class="stat-num">23</div><div class="stat-label">Countries</div></div>
+      <div class="stat-block"><div class="stat-num">10m</div><div class="stat-label">Users</div></div>
+      <div class="stat-block"><div class="stat-num">3800</div><div class="stat-label">Kiosks</div></div>
+      <div class="stat-block"><div class="stat-num">1200+</div><div class="stat-label">Restaurants</div></div>
+    </div>
+    <div class="recent-cell">
+      <div class="cell-label">Craft</div>
+      <p>Raised the quality bar across multiple product teams by driving consistency, stronger critique, and higher craft standards.</p>
+    </div>
+    <!-- Row 2: [DesignOps] [Discovery] [Analytics] -->
+    <div class="recent-cell">
+      <div class="cell-label">Design Ops</div>
+      <p>Built and scaled DesignOps to bring structure, clarity, and efficiency to a distributed organization.</p>
+    </div>
+    <div class="recent-cell">
+      <div class="cell-label">Discovery</div>
+      <p>Introduced a repeatable discovery model that shifted teams from assumptions to evidence, improving decision quality and collaboration across the board.</p>
+    </div>
+    <div class="recent-cell">
+      <div class="cell-label">Analytics</div>
+      <p>Created an analytics tagging system to measure product usability and signal user experience.</p>
+    </div>
+    <!-- Row 3: [Roadmaps] [Conference merged: text + image] -->
+    <div class="recent-cell">
+      <div class="cell-label">Vision &amp; Strategy</div>
+      <p>Led design initiatives that directly influenced cross-team roadmaps, including full mobile app, website and kiosk redesigns, and a multi-brand design system overhaul focused on usability at scale.</p>
+    </div>
+    <div class="recent-cell cell-span-2 cell-conference">
+      <div class="cell-conf-text">
+        <div class="cell-label">Influence</div>
+        <p>Speaker on Conversion Rate Optimization at the Burger King International Conference in Paris, influencing 200+ franchise stakeholders across global markets.</p>
+      </div>
+      <div class="cell-conf-image" style="background-image:url('assets/3840d12289c0.jpg')"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Footer ─── -->
+<footer id="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div class="footer-name reveal">
+        <span>Diego</span>
+        <span>Hainzenreder</span>
+      </div>
+      <div class="footer-contact reveal d1">
+        <div class="footer-links">
+          <a href="https://linkedin.com/in/dhainzenreder" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="mailto:diego@hainzenreder.co">diego@hainzenreder.co</a>
+        </div>
+        <div class="footer-tagline">Product Design Consulting Leadership @ Ambush&#10;Porto Alegre, Brazil — Working Globally</div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ─── Menu ─── */
+  const menuBtn     = document.getElementById('menuBtn');
+  const menuOverlay = document.getElementById('menuOverlay');
+  const menuClose   = document.getElementById('menuClose');
+
+  menuBtn.addEventListener('click', () => {
+    menuOverlay.classList.add('open');
+    menuOverlay.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('menu-open');
+  });
+  menuClose.addEventListener('click', closeMenu);
+  function closeMenu() {
+    menuOverlay.classList.remove('open');
+    menuOverlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('menu-open');
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+
+  /* ─── Layers carousel (scroll-driven horizontal) ─── */
+  const layersOuter = document.getElementById('layers-scroll');
+  const layersTrack = document.getElementById('layers-track');
+  const layersSlides = layersTrack ? layersTrack.children : [];
+  const layersTotal = layersSlides.length;
+
+  function updateLayersFromScroll() {
+    if (!layersOuter || !layersTrack) return;
+    // Skip on mobile (vertical stack)
+    if (window.matchMedia('(max-width: 767px)').matches) {
+      layersTrack.style.transform = '';
+      return;
+    }
+    const rect = layersOuter.getBoundingClientRect();
+    const outerH = layersOuter.offsetHeight;
+    const vh = window.innerHeight;
+    const totalScroll = outerH - vh;
+    // Clamp progress: 0 before sticky range, 1 after
+    const rawScrolled = -rect.top;
+    const progress = Math.max(0, Math.min(1, rawScrolled / totalScroll));
+    // Continuous translate: 0 → -(N-1) * 100%
+    const tx = progress * (layersTotal - 1) * 100;
+    layersTrack.style.transform = `translate3d(-${tx}%, 0, 0)`;
+  }
+  window.addEventListener('scroll', updateLayersFromScroll, { passive: true });
+  window.addEventListener('resize', updateLayersFromScroll, { passive: true });
+  updateLayersFromScroll();
+
+
+
+  /* ─── Reveal on scroll ─── */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const el = entry.target;
+      if (entry.isIntersecting) {
+        el.classList.remove('exiting', 'snap-visible');
+        if (el.dataset.revealed) {
+          // Already seen — snap visible instantly, no animation
+          el.classList.add('snap-visible');
+        } else {
+          // First entry — play animation
+          void el.offsetWidth;
+          el.classList.add('in-view');
+          el.dataset.revealed = '1';
+        }
+      } else {
+        const isVisible = el.classList.contains('in-view') || el.classList.contains('snap-visible');
+        if (el.dataset.revealed && isVisible) {
+          const exitUp = entry.boundingClientRect.top < 0;
+          if (exitUp) {
+            // Scroll down past → exit animation (animation from{} overrides .reveal opacity:0)
+            el.style.setProperty('--exit-y', '-32px');
+            el.classList.remove('in-view', 'snap-visible');
+            el.classList.add('exiting');
+          } else {
+            // Scroll back up past → silent reset
+            el.classList.remove('in-view', 'exiting', 'snap-visible');
+          }
+        }
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+</script>
+<!-- Tweaks panel -->
+<div id="tweaks-root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "line1Weight": "200",
+  "line2Weight": "400",
+  "heroSize": 22,
+  "frameVisible": true,
+  "whatItalic": true,
+  "topicsOuterBorders": false,
+  "layersFullBleed": false,
+  "introColSpan": 11,
+  "rbiNameBold": true
+}/*EDITMODE-END*/;
+
+function PortfolioTweaks() {
+  const [values, set] = useTweaks(TWEAK_DEFAULTS);
+
+  React.useEffect(() => {
+    // Hero line weights
+    document.querySelectorAll('.hero-text .line1').forEach(el => {
+      el.style.fontWeight = values.line1Weight;
+    });
+    document.querySelectorAll('.hero-text .line2-light').forEach(el => {
+      el.style.fontWeight = values.line1Weight;
+    });
+    document.querySelectorAll('.hero-text .line2').forEach(el => {
+      el.style.fontWeight = values.line2Weight;
+    });
+    // Hero font size (applies to left column only)
+    document.querySelectorAll('.hero-left .hero-text').forEach(el => {
+      el.style.fontSize = values.heroSize + 'px';
+    });
+    // Frame lines
+    document.querySelectorAll('.frame-line').forEach(el => {
+      el.style.opacity = values.frameVisible ? '1' : '0';
+    });
+    // What italic
+    document.querySelectorAll('.what-italic').forEach(el => {
+      el.style.fontStyle = values.whatItalic ? 'italic' : 'normal';
+    });
+    // Layers full-bleed (no-op — carousel layout makes this implicit)
+    const layersGrid = document.querySelector('.layers-grid');
+    if (layersGrid) layersGrid.classList.toggle('full-bleed', values.layersFullBleed);
+    // RBI name weight
+    document.querySelectorAll('.rbi-name').forEach(el => {
+      el.style.fontWeight = values.rbiNameBold ? '700' : '400';
+    });
+    // Intro col span
+    const endCol = values.introColSpan + 1;
+    document.querySelectorAll('.slide-title-lg, .slide-desc').forEach(el => {
+      el.style.gridColumn = `1 / ${endCol}`;
+    });
+    // Topics outer borders
+    const topicItems = document.querySelectorAll('.topic-item');
+    if (topicItems.length) {
+      topicItems[0].style.borderTop = values.topicsOuterBorders ? '1px solid var(--border)' : 'none';
+      topicItems[topicItems.length - 1].style.borderBottom = values.topicsOuterBorders ? '1px solid var(--border)' : 'none';
+    }
+  }, [values]);
+
+  return (
+    <TweaksPanel>
+      <TweakSection label="Hero">
+        <TweakRadio
+          label="Line 1 — "Hello, I'm Diego.""
+          value={values.line1Weight}
+          options={[
+            { label: "Light", value: "300" },
+            { label: "Regular", value: "400" },
+          ]}
+          onChange={v => set("line1Weight", v)}
+        />
+        <TweakRadio
+          label="Line 2 — "Product Design Leader""
+          value={values.line2Weight}
+          options={[
+            { label: "Light", value: "300" },
+            { label: "Regular", value: "400" },
+          ]}
+          onChange={v => set("line2Weight", v)}
+        />
+        <TweakSlider
+          label="Title size"
+          value={values.heroSize}
+          min={16} max={40} step={1}
+          onChange={v => set("heroSize", v)}
+        />
+      </TweakSection>
+      <TweakSection label="Work — Slide 1">
+        <TweakToggle
+          label="\"Restaurant Brands International\" bold"
+          value={values.rbiNameBold}
+          onChange={v => set("rbiNameBold", v)}
+        />
+        <TweakSlider
+          label="Title & description column span"
+          value={values.introColSpan}
+          min={6} max={12} step={1}
+          onChange={v => set("introColSpan", v)}
+        />
+      </TweakSection>
+      <TweakSection label="Layers">
+        <TweakToggle
+          label="Full-bleed (edge to edge)"
+          value={values.layersFullBleed}
+          onChange={v => set("layersFullBleed", v)}
+        />
+      </TweakSection>
+      <TweakSection label="What">
+        <TweakToggle
+          label="Italic ending phrase"
+          value={values.whatItalic}
+          onChange={v => set("whatItalic", v)}
+        />
+      </TweakSection>
+      <TweakSection label="Where">
+        <TweakToggle
+          label="Outer topic borders"
+          value={values.topicsOuterBorders}
+          onChange={v => set("topicsOuterBorders", v)}
+        />
+      </TweakSection>
+      <TweakSection label="Layout">
+        <TweakToggle
+          label="Frame lines"
+          value={values.frameVisible}
+          onChange={v => set("frameVisible", v)}
+        />
+      </TweakSection>
+    </TweaksPanel>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('tweaks-root')).render(<PortfolioTweaks />);
+</script>
+</body>
+</html>
